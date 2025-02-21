@@ -76,7 +76,7 @@ In USB boot, flash remains a Secure peripheral, and NS code can only access flas
 
 ## Protocol Alternative A: Absolutely Minimal
 
-This is assuming we do *not* want the complexity of tunnelling PicoBoot through UART/I2C, for absolutely minimal code on the host. Consider this protocol a strawman for now. The byte-level protocol for UART and I2C boot is the same:
+This is assuming we do *not* want the complexity of tunneling PicoBoot through UART/I2C, for absolutely minimal code on the host. Consider this protocol a strawman for now. The byte-level protocol for UART and I2C boot is the same:
 
 - Wake sequence: to initiate communications, send the UF2 family ID (a well-known entropy-dense constant)
 - Then a 32-bit count of bytes to be loaded at the base of SRAM

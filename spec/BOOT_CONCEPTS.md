@@ -45,7 +45,7 @@
   **NOTE**: use of partition_tables is optional. In the absence of a partition_table there is a single **binary** in 
   flash.
 
-* **image_def** - a block type which provides information about how to interpret and/or excecute the contents of a 
+* **image_def** - a block type which provides information about how to interpret and/or execute the contents of a 
   region (**binary**)
   
   _Purpose_: Most commonly these describe how to interpret the contents **binary** as something that can be loaded 
@@ -60,7 +60,7 @@
   contains an acceptable image-def)
 
   **NOTE** the only _flash_ boot regions we care about are a partition, or the entirety of the first flash (when we 
-  don't have, or havent yet found, a partition table)
+  don't have, or haven't yet found, a partition table)
 
 * **slot** - a 4K region at or near the start of flash where we look for the start of block loops. There are two slots:
   * slot 0 - the first 4K of flash
@@ -74,7 +74,7 @@
 
 * **version** - a partition_table or binary may include a VERSION. The version serves three purposes:
   1. to choose which of two valid partition tables to use if both slot 0 and slot 1 have one.
-  2. to choose which of two valid binaries to use if both partiton A and partition B have one.
+  2. to choose which of two valid binaries to use if both partition A and partition B have one.
   3. to prevent rollback of binaries on a secure chip past a certain point. 
 
   In either case the higher versioned one is used.
@@ -111,7 +111,7 @@
 
   i. a "slot" is deemed to be successful for a "flash update" boot, if a bootable IMAGE is found having chosen that 
   slot (i.e. we get as far as entering an image")
-  ii. a "partition" is deemed to be successful for a "flash udpate" boot, if a bootable IMAGE is found in the 
+  ii. a "partition" is deemed to be successful for a "flash update" boot, if a bootable IMAGE is found in the 
   partition during the "flash update" boot. Note the partition does have to be found by the boot process for this to 
   happen (i.e. if it is further down the boot path than another partition which is bootable, then the flash update 
   boot does nothing (i.e. other boot options are not ignored (other than the other partition of the A/B pair)

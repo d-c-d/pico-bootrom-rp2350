@@ -61,7 +61,7 @@ We have two scenarios based on (**TODO**) new "OTP accesses via picotool must be
 
    Rationale: it is still likely that we don't want to give access to certain OTP pages belonging to say a 
    bootloader. Normally, the bootloader would runtime advance the locks to prevent access to later secure code, but 
-   in this case we want to just use the "USB boot" permissisons to deny access as no bootloader code is run before 
+   in this case we want to just use the "USB boot" permissions to deny access as no bootloader code is run before 
    "USB boot"
 
 **FACT**: It turns out (*and Luke said this!*), that we can handle both use cases by advancing the secure locks to the 
@@ -78,7 +78,7 @@ isn't a case where we might run NS code with these permissive "USB boot" permiss
 ##### Final notes / Questions
 
 * I don't think there is any need to disallow (nor can we) OTP access via signed code if signing is enabled, but 
-  we've allowed non-signed PICOBOOT access to OTP too. The secure code will just have "USB boot" permissions as allways
+  we've allowed non-signed PICOBOOT access to OTP too. The secure code will just have "USB boot" permissions as always
 * **FACT** we should rename these permissions PICOBOOT if they aren't already!
 * It can be a bit confusing when thinking about signed PICOBOOT, because it really gives you the ability to do 
   things in secure mode. However, what we've decided is that EVEN in this case you cannot access OTP with any 

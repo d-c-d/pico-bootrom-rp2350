@@ -41,7 +41,7 @@
 
 Unlike RP2040 which has a single linear always user writable flash area and a single binary at the beginning, RP2350 adds permissioning, and allows partitioning of the space using a partition table.
 
-* The partition tables divides the 32M flash address space into (possibly named and/oridentified) partitions with attributes 
+* The partition tables divides the 32M flash address space into (possibly named and/or identified) partitions with attributes 
 * There can be one or two partition tables (to allow for flash partial write/failures). The (valid hash/opt sig) one with the latest version is "active"
 * In the absence of a partition table, the bootrom will use a default partition a single partition with offset/size & attributes from OTP (or just default to everything is writable if OTP not present)
   * we already said we had two flash sizes, so we should use those here
@@ -80,7 +80,7 @@ Unlike RP2040 which has a single linear always user writable flash area and a si
   * hash (SHA-256)
   * optional signature
   * unordered partitions (well the order is important for searching, but does not have to match flash order)... also 
-    we don't actaully validate that partitions don't overlap, the first one found wins.
+    we don't actually validate that partitions don't overlap, the first one found wins.
 * Each PT partition has:
    * 26: 4K aligned start/end 
    * 6: permissions
@@ -93,7 +93,7 @@ Unlike RP2040 which has a single linear always user writable flash area and a si
    * 3: flags
      * bootable
      * boot architecture (note this isn't strictly necessary, but can be used to restrict without actually looking for IMAGE_DEFs)
-     * "partition only" for UF2 targetting (may overlap others)
+     * "partition only" for UF2 targeting (may overlap others)
    * 6: set of UF2 families that can be dropped
      * built in ones (ARM S, ARM NS, RISC-V, data, whole_flash) are bits in the flags
      * additionally zero/one actually family IDs (allowing user more targeting ability - e.g. give your WiFI firmware a different UF2 image, then you can drop it on)
@@ -114,11 +114,11 @@ Unlike RP2040 which has a single linear always user writable flash area and a si
   (uint64_t id) 
    ``` 
 * A PT covers all 32M of flash; it is a linear address space, so it only makes sense to have a single partition spanning across the 16M boundary, if the whole of the first 16M is populated.
-  * now with bounds checking, it is even more less senible.
+  * now with bounds checking, it is even more less sensible.
 * PT in memory for each partition has just start/end/permission/flags (now likely 64 bits), and a pointer to the PT in flash - if we need other fields (not needed for permission checks) we will reload the PT and verify hash (we just don't have space to store it in BOOTRAM).. 
   * because of memory constraints we will limit number of partitions to 16 (in RP2350)
-  * note i'm thinking i'll only keep 64 bits of the SHA-256 in memory to save space..we use this to check the PT on 
-    flash is the same as wgeb we loaded, but we only use that to get ids and names, so you can't subvert the permissions after the fact by managing to match 128 bits of the hash! 
+  * note I'm thinking I'll only keep 64 bits of the SHA-256 in memory to save space..we use this to check the PT on 
+    flash is the same as what we loaded, but we only use that to get ids and names, so you can't subvert the permissions after the fact by managing to match 128 bits of the hash! 
 * An IMAGE_DEF may appear in the same chain of blocks as the PT.
   * I say it this way around,as a PT in an arbitrary binary is irrelevant, it is only pertinent if the chain starts 
     in PT slot0/slot1 at the start of flash.
@@ -494,7 +494,7 @@ x_find_target_partition(pt, boot_cpu, allowed_owned, bootable_filter, family_id,
 
 ### let's think about RAM boot
 
-Right now i'm suggesting you can include a PT, but let's decide for sure. pros/cons vs having one in flash, and does it make sense for one in RAM to supercede one in flash
+Right now I'm suggesting you can include a PT, but let's decide for sure. pros/cons vs having one in flash, and does it make sense for one in RAM to supersede one in flash
 
 ```
  possibly_verified_boot_image_def = invalid
@@ -536,14 +536,14 @@ This is a slight variation from what we talked about, as the pre-reboot code doe
 **todo** um, what about debugger... in this case you are likely loading binary at beginning of flash - you don't have A/B partitions, so unless you have hashed and signed the binary you are fine. **todo** what do we do with debugger and secure binaries anyway.
 
 Question: what is the correct behavior when putting a "try before you buy" in a non A/B partition.
-* writing it as is, is not terrible... if it doesn't commit itself after the reboot, then the partition will be non bootable meaing you fall thru to nsboot, or another partition if there is one 
+* writing it as is, is not terrible... if it doesn't commit itself after the reboot, then the partition will be non bootable meaning you fall thru to nsboot, or another partition if there is one 
 * ~~alternative would be to always copy tried_version to version if booting from a non A/B partition~~
 
 UPDATE: try before you buy for partition tables, takes entering the image to mean success.
 ~~try before you buy for partitions does not support version downgrade~~
 note when using partition tables you must do TBYB on the pt NOT the image.. I had considered making the image_def/pt combo image_def based, including picking amongst two pts with image_def rules, but this makes it impossible to switch from image+pt to pt only, as the image_def would surely win against no image_def
 
-Note: Liam suggeste, and it makes sense that we allow for a watchdog timeout in "try before you buy" - I suggest we just always set this to the maximum watchdog timeout.
+Note: Liam suggested, and it makes sense that we allow for a watchdog timeout in "try before you buy" - I suggest we just always set this to the maximum watchdog timeout.
 
 
 ## picotool
@@ -605,13 +605,13 @@ In the above case downing DATA will depend on the current CPU of the chip, since
 * What about no partition table and permissions
   * It's easy enough to make an OTP default for NS & boot permissions read/write
   * I guess this also makes sense because not having a PT is valid (you might want to allow picoboot read, but not write)
-  * I was worried about ppl attacking by just removing the PT, but if they can do that they can liklely read/write flash anyway. still probably good as an extra level of security
-new summary duerhwe soqn
+  * I was worried about ppl attacking by just removing the PT, but if they can do that they can likely read/write flash anyway. still probably good as an extra level of security
+new summary duerhwe soon
 
 ### Notes
 
 * If there isn't a standalone partition table, then there can only be one binary?
-  * you could have the embedded partition table refer to a spot for binary B, but it would mean tha you could trash the partition table (you wouldn't have two copies) when overwriting binary A. Therefore we don't want to support that.
+  * you could have the embedded partition table refer to a spot for binary B, but it would mean that you could trash the partition table (you wouldn't have two copies) when overwriting binary A. Therefore we don't want to support that.
 * Partition table is loaded by
   * Flash boot
   * nsboot (so we know what we're allowed to touch)
@@ -625,7 +625,7 @@ new summary duerhwe soqn
 * ~~If we respect partition tables in binaries, what do we do with A/B~~
   * ~~Answer: we don't; the partition tables are separately versioned, however the only time it could possibly matter is if you have two partition table boot loaders (with embedded binaries)~~
   * question is obsolete because we only time we never have A/B binaries with A/B partitions; if you have A/B partitions each with binary, then you pick the latest 
-* ~~If we have partition tables in binaries, what does that mean for launching RAM ones?~~ we imitialize if present
+* ~~If we have partition tables in binaries, what does that mean for launching RAM ones?~~ we initialize if present
 * If we have a single embedded partition table and we launch from debugger, what does that mean?
   * think this is ok, as we always go thru boot path
 * If single, can binary sign PT?: answer, yes

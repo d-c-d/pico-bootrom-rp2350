@@ -8,7 +8,7 @@
 2. **Only core 0 is reset** - This might be core 1 debugging core 0, however it is important to realize that core 1 
    may be using resources, so we need to be careful what core 0 touches!
 
-TODO: list/think tru all the possible scenarios (powman/watchdog resets etc.)
+TODO: list/think through all the possible scenarios (powman/watchdog resets etc.)
 
 ## Phases
 
@@ -45,7 +45,7 @@ bit HINT instructions.
 
 The RCP instructions are used to harden the **arm6** code as it is part of the _secure boot path_.
 
-The RCP instructions are igonred by **varmulet** except for `mrc p7, #1, r15, c0, c0, #0` which is used to check 
+The RCP instructions are ignored by **varmulet** except for `mrc p7, #1, r15, c0, c0, #0` which is used to check 
 the status of the RCP, and the **varmulet** code sets N (salt initialized - because we don't need to initialize it) 
 and V 
 (running under **varmulet**). 
@@ -80,7 +80,7 @@ SIZE : USE
 part of flash NS code can write to), and of course core 1 still may need the permissions in place. TODO do we ever 
 need to have different permissions for the two cores? 
 
-Core 1 may be running duing **preboot** (and **flashboot-setup**), so during these phases it is not used by core 0 
+Core 1 may be running during **preboot** (and **flashboot-setup**), so during these phases it is not used by core 0 
 (note that 
 whilst this core 1 space belongs to the bootrom, it may be being used for **varmulet** state on behalf of varmulet-ed 
 RISC-V bootrom functions)

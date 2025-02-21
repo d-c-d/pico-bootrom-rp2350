@@ -21,7 +21,7 @@ Now we don't actually have a loader, but we do have these which use physical add
 1. gdb - i.e. when you load an ELF under the debugger
 2. UF2 - `elf2uf2` will use the physical address to determine where the code/data should be loaded by nsboot.
 
-What about virtual address != phyiscal_address on RP2040
+What about virtual address != physical_address on RP2040
 
 * If virtual address == physical address then it doesn't matter.
 * If virtual address != physical address then runtime startup (`crt0.S`) copies from flash to RAM at runtime (based on its own table)
@@ -148,7 +148,7 @@ to not flash boot path))
   * If there is no block at the *next* location, then the list ends
 * We will insert a block with a NULL forward link early in the binary. This is the first link in the list, and is 
   placed close to the start of the binary so the bootrom can find (and navigate) the block list without too much 
-  scanning. Additional blocks can be addded post link by updating the forward pointer
+  scanning. Additional blocks can be added post link by updating the forward pointer
 
 ### Block basics
 
@@ -238,7 +238,7 @@ may make this impossible in asm code)
 Note that once we find the first block, we only follow immediately adjacent following blocks, or skipping via the 
 `NEXT_BLOCK_OFFSET`. We stop when we don't land on a block.
 
-*TODO*: decide whether we should add a flag to our first byte to indicate whether (and how) we should condintue scanning
+*TODO*: decide whether we should add a flag to our first byte to indicate whether (and how) we should continue scanning
 if no block is found there. 
 
 #### IMAGE_TYPE
@@ -377,7 +377,7 @@ Optional block with info on initial PC, SP
 
 #### HASH_DEF
 
-Optional block woth information about what and how to hash
+Optional block with information about what and how to hash
 
 ```
 .byte PICOBIN_BLOCK_ITEM_1BS_HASH_DEF // item type (with one byte size)
@@ -400,11 +400,11 @@ Option block with hash result (for use when not using signature)
 .word [n]                         // hash value... which can be used for checking the binary is AOK           
 ```
 
-Note tha everything in the scope is hashed along with everything in this block up until this hash item.
+Note that everything in the scope is hashed along with everything in this block up until this hash item.
 
 #### ITEM_SIGNATURE
 
-Optional block with cyrptographic signature. If present, this **must** be the last item in the block, otherwise the block is invalid.
+Optional block with cryptographic signature. If present, this **must** be the last item in the block, otherwise the block is invalid.
 
 TODO: should we include sizes of keys, or have that implicit in sig type (which is probably better, as we only 
 support one)
@@ -451,5 +451,5 @@ TODO: Need to think more through prepending a 4K block on the beginning
 Do we
 
 1) Map that at 0xfffff000
-2) Shift everthing else $K (sounds prefereable, but then the ELF strictly isn't loadable) - perhaps we only package 
+2) Shift everything else $K (sounds preferable, but then the ELF strictly isn't loadable) - perhaps we only package 
    things to UF2/BIN as a solution?
